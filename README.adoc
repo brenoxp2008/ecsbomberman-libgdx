@@ -1,16 +1,11 @@
-bomberman-ligdx
-===============
+ecsbomberman-ligdx
+==================
 
-Interface LigGDX for bomberman game
+ecsbomberman-libgdx is a renderization implementation of ecsbomberman system. In order to play the game you need to checkout 
+the two projects.
 
-Projeto em Desenvolvimento de um Bomberman clone utilizando programação modular, 
-desenvolvido como projeto da disciplina:
+Contributors are wellcome.
 
-Programação Sistemática
-
-Universidade de Brasília - UnB
-
-2/2014
 
 
 = Inclua o Projeto Bomberman
