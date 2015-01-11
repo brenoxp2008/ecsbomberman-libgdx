@@ -4,15 +4,10 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import org.apache.log4j.Logger;
-
 import br.unb.bomberman.ui.screens.ScreenDimensions;
-import br.unb.gridphysics.Vector2D;
-import br.unb.unbomber.component.Ballistic;
 import br.unb.unbomber.component.Draw;
 import br.unb.unbomber.component.Movable;
 import br.unb.unbomber.component.Position;
-import br.unb.unbomber.components.Transform;
 import br.unb.unbomber.components.Visual;
 
 import com.artemis.Aspect;
@@ -23,7 +18,6 @@ import com.artemis.annotations.Wire;
 import com.artemis.utils.ImmutableBag;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 
 @Wire
@@ -33,16 +27,10 @@ public class RenderSystem extends EntitySystem {
 	private OrthographicCamera cam;
 	private Array<Entity> renderQueue;
 	private Comparator<Entity> comparator;
-
-	ComponentMapper<Draw> cmDraw;
 	
-	ComponentMapper<Position> cmPosition;
+	private ComponentMapper<Position> cmPosition;
 
-	ComponentMapper<Visual> cmVisual;
-	
-	ComponentMapper<Movable>  cmMovable;
-
-	protected Logger LOGGER = Logger.getLogger("br.unb.unbomber.systems");
+	private ComponentMapper<Visual> cmVisual;
 
 	private ScreenDimensions screenDimensions = new ScreenDimensions();
 	

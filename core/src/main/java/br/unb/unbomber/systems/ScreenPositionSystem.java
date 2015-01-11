@@ -25,19 +25,13 @@ import com.badlogic.gdx.math.MathUtils;
 public class ScreenPositionSystem extends EntitySystem {
 
 	
-	ComponentMapper<Draw> cmDraw;
-	
-	ComponentMapper<Position> cmPosition;
+	private ComponentMapper<Position> cmPosition;
 
-	ComponentMapper<Visual> cmVisual;
+	private ComponentMapper<Visual> cmVisual;
 	
-	ComponentMapper<Movable>  cmMovable;
-
 	private ComponentMapper<Ballistic> cmBallistic;
 
 	private ComponentMapper<Timer> cmTimer;
-
-	protected Logger LOGGER = Logger.getLogger("br.unb.unbomber.systems");
 
 	private ScreenDimensions screenDimensions = new ScreenDimensions();
 
