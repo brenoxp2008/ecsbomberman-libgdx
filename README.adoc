@@ -1,5 +1,5 @@
-bomberman-ligdx
-===============
+ecsbomberman-ligdx
+==================
 
 ecsbomberman-libgdx is a renderization implementation of ecsbomberman system. In order to play the game you need to checkout 
 the two projects.
