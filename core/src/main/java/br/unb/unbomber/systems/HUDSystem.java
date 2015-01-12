@@ -4,7 +4,6 @@ import net.mostlyoriginal.api.event.common.EventManager;
 import net.mostlyoriginal.api.event.common.Subscribe;
 import br.unb.bomberman.ui.screens.Assets;
 import br.unb.unbomber.component.Timer;
-import br.unb.unbomber.event.GameOverEvent;
 import br.unb.unbomber.event.TimeOverEvent;
 import br.unb.unbomber.misc.EntityBuilder2;
 
@@ -13,6 +12,8 @@ import com.artemis.annotations.Wire;
 import com.artemis.systems.VoidEntitySystem;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+
+import ecs.common.match.GameOverEvent;
 
 /**
  * Control the system of the status bar.

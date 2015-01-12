@@ -1,5 +1,8 @@
 package br.unb.bomberman.ui.screens;
 
+import br.unb.bomberman.ui.screens.battle.DrawScreen;
+import br.unb.bomberman.ui.screens.battle.GameScreen;
+import br.unb.bomberman.ui.screens.battle.WinScreen;
 import br.unb.unbomber.GDXGame;
 
 import com.badlogic.gdx.Gdx;
@@ -48,13 +51,12 @@ public class TestListMenuScreen implements Screen {
         stage.clear();
         Gdx.input.setInputProcessor(stage);
         MenuButtonFactory factory = new MenuButtonFactory();
-        stage.addActor(factory.makeMenuButton(game, "Explosion", new GameScreen(game, game.TEST_STAGE_EXPLOSION)));
-        stage.addActor(factory.makeMenuButton(game, "Simple Robot", new GameScreen(game, game.TEST_SIMPLE_ROBOT)));
-        stage.addActor(factory.makeMenuButton(game, "Renderization", new GameScreen(game, game.TEST_RENDERIZATION)));
-        stage.addActor(factory.makeMenuButton(game, "Blocks Renderization", new GameScreen(game, game.TEST_STAGE_LOAD)));
-        stage.addActor(factory.makeMenuButton(game, "Draw", new DrawScreen(game)));
-        stage.addActor(factory.makeMenuButton(game, "Win", new WinScreen(game)));
-        stage.addActor(factory.makeMenuButton(game, "Win a Match", new WinAMatchScreen(game)));
+//        stage.addActor(factory.makeMenuButton(game, "Explosion", new GameScreen(game, game.TEST_STAGE_EXPLOSION)));
+//        stage.addActor(factory.makeMenuButton(game, "Simple Robot", new GameScreen(game, game.TEST_SIMPLE_ROBOT)));
+//        stage.addActor(factory.makeMenuButton(game, "Renderization", new GameScreen(game, game.TEST_RENDERIZATION)));
+//        stage.addActor(factory.makeMenuButton(game, "Blocks Renderization", new GameScreen(game, game.TEST_STAGE_LOAD)));
+        stage.addActor(factory.makeMenuButton(game, "Draw", new DrawScreen(game, null)));
+        stage.addActor(factory.makeMenuButton(game, "Win", new WinScreen(game, null)));
         stage.addActor(factory.makeMenuButton(game, "Back", game.mainMenuScreen));
 	}
 

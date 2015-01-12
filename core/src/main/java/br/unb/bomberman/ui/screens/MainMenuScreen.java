@@ -1,5 +1,6 @@
 package br.unb.bomberman.ui.screens;
 
+import br.unb.bomberman.ui.screens.battle.BattleModeFlow;
 import br.unb.unbomber.GDXGame;
 
 import com.badlogic.gdx.Gdx;
@@ -9,7 +10,9 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 public class MainMenuScreen implements Screen {
 
@@ -164,13 +167,22 @@ public class MainMenuScreen implements Screen {
 		stage = new Stage();
 		stage.clear();
 		MenuButtonFactory factory = new MenuButtonFactory();
-		stage.addActor(factory.makeMenuButton(game, "New Game", new GameScreen(game, game.FIRST_STAGE_LEVEL_ID)));
+		stage.addActor(factory.makeMenuButton("Battle Mode", startBattleModeClickListener));
 		stage.addActor(factory.makeMenuButton(game, "Highscores", new HighScoresScreen(game)));
 		stage.addActor(factory.makeMenuButton(game, "Settings", new SettingsScreen(game)));
 		stage.addActor(factory.makeMenuButton(game, "How to Play", new HowToPlayScreen(game)));
 		stage.addActor(factory.makeMenuButton(game, "Tests", new TestListMenuScreen(game)));
 	}
 
+	
+	ClickListener startBattleModeClickListener =  new  ClickListener() {
+		@Override
+		public void clicked(InputEvent event, float x, float y) {
+			BattleModeFlow battleMode = new BattleModeFlow(game);
+			battleMode.start();
+		}
+	};
+	
 	@Override
 	public void hide() {
 		// TODO Auto-generated method stub

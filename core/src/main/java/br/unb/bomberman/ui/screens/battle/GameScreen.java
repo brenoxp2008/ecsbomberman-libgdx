@@ -14,29 +14,32 @@
  * limitations under the License.
  ******************************************************************************/
 
-package br.unb.bomberman.ui.screens;
+package br.unb.bomberman.ui.screens.battle;
 
-import br.unb.unbomber.BomberMatchWithUi;
-import br.unb.unbomber.BomberMatchWithUi.State;
-import br.unb.unbomber.GDXGame;
+import br.unb.bomberman.ui.screens.Assets;
 import br.unb.unbomber.Settings;
+import br.unb.unbomber.match.GameMatch;
+import br.unb.unbomber.match.GameMatch.State;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 
+import ecs.common.match.TournamentController;
+
 public class GameScreen extends ScreenAdapter {
-	static final int GAME_NOT_SELECTED = -1;
 	static final int GAME_READY = 0;
 	static final int GAME_RUNNING = 1;
 	static final int GAME_PAUSED = 2;
 	static final int GAME_LEVEL_END = 3;
 	static final int GAME_OVER = 4;
 	
-	GDXGame game;
+	SpriteBatch batch;
+	private int state;
 
 	OrthographicCamera guiCam;
 	Vector3 touchPoint;
@@ -48,15 +51,14 @@ public class GameScreen extends ScreenAdapter {
 	int lastScore;
 	String scoreString;
 	
-	BomberMatchWithUi match;
+	GameMatch match;
 	
-	private int state;
-	private final String stageId;
-
-	public GameScreen (GDXGame game, String stageId) {
-		this.game = game;
-		this.stageId = stageId;
-		state = GAME_NOT_SELECTED;
+	TournamentController controller;
+	
+	public GameScreen (SpriteBatch batch, TournamentController controller, GameMatch match) {
+		this.batch = batch;
+		this.controller = controller;
+		this.match = match;
 	}
 	
 	@Override
@@ -70,8 +72,6 @@ public class GameScreen extends ScreenAdapter {
 		guiCam = new OrthographicCamera(320, 480);
 		guiCam.position.set(320 / 2, 480 / 2, 0);
 		touchPoint = new Vector3();
-		
-		match = new BomberMatchWithUi(game.batch, stageId);
 
 		pauseBounds = new Rectangle(320 - 64, 480 - 64, 64, 64);
 		resumeBounds = new Rectangle(160 - 96, 240, 192, 36);
@@ -81,10 +81,13 @@ public class GameScreen extends ScreenAdapter {
 		scoreString = "0";
 		
 		state = GAME_READY;
-		
-		pauseSystems();
+	}
+	
 
-		
+	@Override
+	public void render (float delta) {
+		update(delta);
+		drawUI(delta);
 	}
 
 	public void update (float deltaTime) {
@@ -100,9 +103,6 @@ public class GameScreen extends ScreenAdapter {
 		case GAME_PAUSED:
 			updatePaused();
 			break;
-		case GAME_LEVEL_END:
-			updateLevelEnd();
-			break;
 		case GAME_OVER:
 			updateGameOver();
 			break;
@@ -112,7 +112,6 @@ public class GameScreen extends ScreenAdapter {
 	private void updateReady () {
 		if (Gdx.input.justTouched()) {
 			state = GAME_RUNNING;
-			resumeSystems();
 		}
 	}
 
@@ -124,27 +123,26 @@ public class GameScreen extends ScreenAdapter {
 				Assets.playSound(Assets.clickSound);
 				Assets.music.setVolume(0f);
 				state = GAME_PAUSED;
-				pauseSystems();
 				return;
 			}
 		}
 		
-		if (match.score != lastScore) {
-			lastScore = match.score;
-			scoreString = "" + lastScore;
-		}
-		if (match.state == State.WORLD_STATE_NEXT_LEVEL) {
-			game.setScreen(new WinAMatchScreen(game));
-		}
-		if (match.state == State.WORLD_STATE_GAME_OVER) {
+//		if (match.score != lastScore) {
+//			lastScore = match.score;
+//			scoreString = "" + lastScore;
+//		}
+		if (match.state == State.FINISHED) {
 			state = GAME_OVER;
 			if (lastScore >= Settings.highscores[4])
 				scoreString = "NEW HIGHSCORE: " + lastScore;
 			else
 				scoreString = "" + lastScore;
-			pauseSystems();
 			Settings.addScore("Player", lastScore);
 			Settings.save();
+			
+			if(controller!=null){
+				controller.nextScreen();
+			}
 		}
 	}
 
@@ -158,7 +156,6 @@ public class GameScreen extends ScreenAdapter {
 				Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 				Assets.music.setVolume(Settings.soundVolume);
 				state = GAME_RUNNING;
-				resumeSystems();
 				return;
 			}
 
@@ -168,36 +165,21 @@ public class GameScreen extends ScreenAdapter {
 				Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 				Assets.music.setVolume(Settings.soundVolume);
 				state = GAME_READY;
-				game.getScreen().dispose();
-				game.setScreen(game.mainMenuScreen);
+				controller.quit();
 				return;
 			}
 		}
 	}
 
-	private void updateLevelEnd () {
-		if (Gdx.input.justTouched()) {
-			match.removeAllEntities();
-			
-			//TODO get the next level
-			String nextLevelStageId = "stage";
-			
-			match = new BomberMatchWithUi(game.batch, nextLevelStageId);
-			match.score = lastScore;
-			state = GAME_READY;
-		}
-	}
 
 	private void updateGameOver () {
-		if (Gdx.input.justTouched()) {
-			game.setScreen(game.mainMenuScreen);
-		}
+		controller.nextScreen();
 	}
 
 	public void drawUI (float delta) {
 		guiCam.update();
-		game.batch.setProjectionMatrix(guiCam.combined);
-		game.batch.begin();
+		batch.setProjectionMatrix(guiCam.combined);
+		batch.begin();
 		switch (state) {
 		case GAME_READY:
 			presentReady();
@@ -215,11 +197,11 @@ public class GameScreen extends ScreenAdapter {
 			presentGameOver();
 			break;
 		}
-		game.batch.end();
+		batch.end();
 	}
 
 	private void presentReady () {
-		game.batch.draw(Assets.ready, 160 - 192 / 2, 240 - 32 / 2, 192, 32);
+		batch.draw(Assets.ready, 160 - 192 / 2, 240 - 32 / 2, 192, 32);
 
 	}
 
@@ -227,19 +209,19 @@ public class GameScreen extends ScreenAdapter {
 		Gdx.gl.glClearColor(0.5f, 0.5f, 0.5f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
-		game.batch.draw(Assets.hudBar, 0, 410, 320, 60);
-		game.batch.draw(Assets.pause, 320 - 40, 480 - 64, 48, 48);
-		game.batch.draw(Assets.p1, 320 - 224, 480 - 56, 20, 24);
-		game.batch.draw(Assets.boxScore, 320 - 200, 480 - 56, 16, 24);
-		game.batch.draw(Assets.p2, 320 - 178, 480 - 56, 20, 24);
-		game.batch.draw(Assets.boxScore, 320 - 154, 480 - 56, 16, 24);
-		game.batch.draw(Assets.p3, 320 - 132, 480 - 56, 20, 24);
-		game.batch.draw(Assets.boxScore, 320 - 108, 480 - 56, 16, 24);
-		game.batch.draw(Assets.p4, 320 - 86, 480 - 56, 20, 24);
-		game.batch.draw(Assets.boxScore, 320 - 60, 480 - 56, 16, 24);
+		batch.draw(Assets.hudBar, 0, 410, 320, 60);
+		batch.draw(Assets.pause, 320 - 40, 480 - 64, 48, 48);
+		batch.draw(Assets.p1, 320 - 224, 480 - 56, 20, 24);
+		batch.draw(Assets.boxScore, 320 - 200, 480 - 56, 16, 24);
+		batch.draw(Assets.p2, 320 - 178, 480 - 56, 20, 24);
+		batch.draw(Assets.boxScore, 320 - 154, 480 - 56, 16, 24);
+		batch.draw(Assets.p3, 320 - 132, 480 - 56, 20, 24);
+		batch.draw(Assets.boxScore, 320 - 108, 480 - 56, 16, 24);
+		batch.draw(Assets.p4, 320 - 86, 480 - 56, 20, 24);
+		batch.draw(Assets.boxScore, 320 - 60, 480 - 56, 16, 24);
 		
 		Assets.font.setScale(0.6f, 1);
-		Assets.font.draw(game.batch, scoreString, 320 - 196, 480 - 32);
+		Assets.font.draw(batch, scoreString, 320 - 196, 480 - 32);
 		
 		match.update(deltaTime);
 	}
@@ -247,7 +229,7 @@ public class GameScreen extends ScreenAdapter {
 	private void presentPaused () {
 		Gdx.gl.glClearColor(0.5f, 0.5f, 0.5f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		game.batch.draw(Assets.pauseMenu, 160 - 192 / 2, 240 - 96 / 2, 192, 96);
+		batch.draw(Assets.pauseMenu, 160 - 192 / 2, 240 - 96 / 2, 192, 96);
 	}
 
 	private void presentLevelEnd () {
@@ -255,35 +237,22 @@ public class GameScreen extends ScreenAdapter {
 		String bottomText = "in another castle!";
 		float topWidth = Assets.font.getBounds(topText).width;
 		float bottomWidth = Assets.font.getBounds(bottomText).width;
-		Assets.font.draw(game.batch, topText, 160 - topWidth / 2, 480 - 40);
-		Assets.font.draw(game.batch, bottomText, 160 - bottomWidth / 2, 40);
+		Assets.font.draw(batch, topText, 160 - topWidth / 2, 480 - 40);
+		Assets.font.draw(batch, bottomText, 160 - bottomWidth / 2, 40);
 	}
 
 	private void presentGameOver () {
-		game.batch.draw(Assets.gameOver, 160 - 160 / 2, 240 - 96 / 2, 160, 96);
+		batch.draw(Assets.gameOver, 160 - 160 / 2, 240 - 96 / 2, 160, 96);
 		float scoreWidth = Assets.font.getBounds(scoreString).width;
-		Assets.font.draw(game.batch, scoreString, 160 - scoreWidth / 2, 480 - 20);
+		Assets.font.draw(batch, scoreString, 160 - scoreWidth / 2, 480 - 20);
 	}
 	
-	private void pauseSystems() {
-		//TODO
-	}
-	
-	private void resumeSystems() {
-		//TODO
-	}
 
-	@Override
-	public void render (float delta) {
-		update(delta);
-		drawUI(delta);
-	}
 
 	@Override
 	public void pause () {
 		if (state == GAME_RUNNING) {
 			state = GAME_PAUSED;
-			pauseSystems();
 		}
 	}
 }

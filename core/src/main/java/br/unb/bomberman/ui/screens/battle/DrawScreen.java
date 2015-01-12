@@ -1,5 +1,7 @@
-package br.unb.bomberman.ui.screens;
+package br.unb.bomberman.ui.screens.battle;
 
+import br.unb.bomberman.ui.screens.Assets;
+import br.unb.bomberman.ui.screens.MenuButtonFactory;
 import br.unb.unbomber.GDXGame;
 
 import com.badlogic.gdx.Gdx;
@@ -7,31 +9,32 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
-public class WinAMatchScreen implements Screen{
+import ecs.common.match.ScreenFlowController;
+
+public class DrawScreen implements Screen{
 
 	final GDXGame game;
 	
-	Texture           background;
-    OrthographicCamera camera;
+	private Texture background;
+    
+	private OrthographicCamera camera;
     
     private Stage stage;
     
-    Texture   walker;
-	Texture   medal;
-    
-    TextureRegion   FrameWalker; 
-    TextureRegion   FrameMedal; 
-    
-    public WinAMatchScreen (final GDXGame game){
-    	this.game = game;        
+    private ScreenFlowController controller;
+
+    public DrawScreen (final GDXGame game, ScreenFlowController controller) {
+    	this.game = game;
     }
+    
     
 	@Override
 	public void render(float delta) {
-
+		
 		Gdx.gl.glClearColor(0.5f, 0.5f, 0.5f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
@@ -41,15 +44,12 @@ public class WinAMatchScreen implements Screen{
         game.batch.begin();
         game.batch.draw(background, -28, -122, 864, 720);
         
-        //desenhar o personagem
-        
         // Forces the render
         game.batch.flush();
         
         stage.act();
         stage.draw();
         game.batch.end();
-		
 		
 	}
 
@@ -63,18 +63,13 @@ public class WinAMatchScreen implements Screen{
 	public void show() {
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 800, 480);
-        //The background
-        background = new Texture(Gdx.files.local("win.png"));
-        //Character and medal
-        walker = new Texture(Gdx.files.local("data/character1/walking-left.png"));
-        medal = new Texture(Gdx.files.local("medal.png"));
-        // Menu Building
+        background = new Texture(Gdx.files.local("draw.png"));
         stage = new Stage();
         stage.clear();
         Gdx.input.setInputProcessor(stage);
         MenuButtonFactory factory = new MenuButtonFactory();
-        stage.addActor(factory.makeMenuButton(game, "Play Again", new GameScreen(game, game.FIRST_STAGE_LEVEL_ID)));
         stage.addActor(factory.makeMenuButton(game, "Quit", game.mainMenuScreen));
+        stage.addActor(factory.makeMenuButton("NEXT", nextClickListener));
 	}
 
 	@Override
@@ -98,7 +93,17 @@ public class WinAMatchScreen implements Screen{
 	@Override
 	public void dispose() {
 		stage.dispose();
-		
 	}
-
+	
+	public void next(){
+		controller.nextScreen();
+	}
+	
+	ClickListener nextClickListener = new ClickListener(){
+		@Override
+		public void clicked(InputEvent event, float x, float y) {
+			Assets.playSound(Assets.clickSound);
+			next();
+		}
+	};
 }

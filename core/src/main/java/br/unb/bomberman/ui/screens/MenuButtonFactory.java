@@ -85,7 +85,7 @@ public class MenuButtonFactory {
 		return button;
 	}
 	
-	public TextButton makeMenuButton(final Game game, final String label, final ClickListener clickListener) {
+	public TextButton makeMenuButton(final String label, final ClickListener clickListener) {
 		button = new TextButton(label, textButtonStyle);
 		button.setHeight(menuItemHeight);
 		button.setWidth(menuItemWidth);

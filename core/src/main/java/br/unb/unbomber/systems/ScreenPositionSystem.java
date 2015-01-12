@@ -1,12 +1,8 @@
 package br.unb.unbomber.systems;
 
-import org.apache.log4j.Logger;
-
 import br.unb.bomberman.ui.screens.ScreenDimensions;
 import br.unb.gridphysics.Vector2D;
 import br.unb.unbomber.component.Ballistic;
-import br.unb.unbomber.component.Draw;
-import br.unb.unbomber.component.Movable;
 import br.unb.unbomber.component.Position;
 import br.unb.unbomber.component.Timer;
 import br.unb.unbomber.components.Transform;
@@ -18,7 +14,6 @@ import com.artemis.Entity;
 import com.artemis.EntitySystem;
 import com.artemis.annotations.Wire;
 import com.artemis.utils.ImmutableBag;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 
 @Wire

@@ -57,7 +57,7 @@ public class SettingsScreen implements Screen {
 		stage = new Stage();
 		stage.clear();
 		if (Settings.musicEnabled) {
-			stage.addActor(buttonFactory.makeMenuButton(game, "Disable Music", new ClickListener() {
+			stage.addActor(buttonFactory.makeMenuButton("Disable Music", new ClickListener() {
 				@Override
 				public void clicked(InputEvent event, float x, float y) {
 					Assets.playSound(Assets.clickSound);
@@ -66,7 +66,7 @@ public class SettingsScreen implements Screen {
 				}	
 			}));
 		} else {
-			stage.addActor(buttonFactory.makeMenuButton(game, "Enable Music", new ClickListener() {
+			stage.addActor(buttonFactory.makeMenuButton("Enable Music", new ClickListener() {
 				@Override
 				public void clicked(InputEvent event, float x, float y) {
 					Assets.playSound(Assets.clickSound);
@@ -76,7 +76,7 @@ public class SettingsScreen implements Screen {
 			}));
 		}
 		if (Settings.soundEnabled) {
-			stage.addActor(buttonFactory.makeMenuButton(game, "Disable Sound", new ClickListener() {
+			stage.addActor(buttonFactory.makeMenuButton("Disable Sound", new ClickListener() {
 				@Override
 				public void clicked(InputEvent event, float x, float y) {
 					Settings.soundEnabled = false;
@@ -84,7 +84,7 @@ public class SettingsScreen implements Screen {
 				}	
 			}));			
 		} else {
-			stage.addActor(buttonFactory.makeMenuButton(game, "Enable Sound", new ClickListener() {
+			stage.addActor(buttonFactory.makeMenuButton("Enable Sound", new ClickListener() {
 				@Override
 				public void clicked(InputEvent event, float x, float y) {
 					Settings.soundEnabled = true;
@@ -94,7 +94,7 @@ public class SettingsScreen implements Screen {
 			}));	
 		}
 		if (!Settings.scoresReseted) {
-			stage.addActor(buttonFactory.makeMenuButton(game, "Reset Scores", new ClickListener() {
+			stage.addActor(buttonFactory.makeMenuButton("Reset Scores", new ClickListener() {
 				@Override
 				public void clicked(InputEvent event, float x, float y) {
 					Assets.playSound(Assets.clickSound);
