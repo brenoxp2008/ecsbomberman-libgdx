@@ -7,9 +7,7 @@ import br.unb.unbomber.match.GameMatch;
 
 import com.badlogic.gdx.Screen;
 
-import ecs.common.match.Match;
-import ecs.common.match.MatchFactory;
-import ecs.common.match.MatchResultListener;
+import ecs.common.match.Contestant;
 import ecs.common.match.TournamentController;
 import ecs.common.match.TournamentController.BattleFlow;
 import ecs.common.match.TournamentRules;
@@ -40,6 +38,8 @@ public class BattleModeFlow {
 		rules = new TournamentRules();
 		rules.setMatchTime(MATCH_TIME);
 		rules.setWinsToChap(3);
+		rules.getContestants().add(new Contestant());
+		rules.getContestants().add(new Contestant());
 		
 		controller = new TournamentController(rules, null){
 
@@ -69,7 +69,7 @@ public class BattleModeFlow {
 		Screen nextScreen;
 		switch (actual) {
 			case SET_CONTESTANTS:
-			nextScreen = new ContestantsSelectScreen(game.batch, controller);
+			nextScreen = new ContestantsSelectScreen(game.batch, controller, rules);
 			break;
 			
 			case PLAY_THE_MATCH:

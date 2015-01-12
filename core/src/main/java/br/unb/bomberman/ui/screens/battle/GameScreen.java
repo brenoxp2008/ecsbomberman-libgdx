@@ -227,8 +227,8 @@ public class GameScreen extends ScreenAdapter {
 	}
 
 	private void presentPaused () {
-		Gdx.gl.glClearColor(0.5f, 0.5f, 0.5f, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		//Gdx.gl.glClearColor(0.5f, 0.5f, 0.6f, 0.8f);
+		//Gdx.gl.glClear(GL20.GL_ALPHA);
 		batch.draw(Assets.pauseMenu, 160 - 192 / 2, 240 - 96 / 2, 192, 96);
 	}
 
