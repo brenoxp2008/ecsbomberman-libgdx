@@ -55,8 +55,8 @@ public class TestListMenuScreen implements Screen {
 //        stage.addActor(factory.makeMenuButton(game, "Simple Robot", new GameScreen(game, game.TEST_SIMPLE_ROBOT)));
 //        stage.addActor(factory.makeMenuButton(game, "Renderization", new GameScreen(game, game.TEST_RENDERIZATION)));
 //        stage.addActor(factory.makeMenuButton(game, "Blocks Renderization", new GameScreen(game, game.TEST_STAGE_LOAD)));
-        stage.addActor(factory.makeMenuButton(game, "Draw", new DrawScreen(game, null)));
-        stage.addActor(factory.makeMenuButton(game, "Win", new WinScreen(game, null)));
+//        stage.addActor(factory.makeMenuButton(game, "Draw", new DrawScreen(game, null)));
+ //       stage.addActor(factory.makeMenuButton(game, "Win", new WinScreen(game, null)));
         stage.addActor(factory.makeMenuButton(game, "Back", game.mainMenuScreen));
 	}
 

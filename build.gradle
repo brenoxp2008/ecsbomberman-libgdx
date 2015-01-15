@@ -58,7 +58,7 @@ project(":core") {
     apply plugin: "java"
     dependencies {
  
-        compile "ecsb:ecsbomberman:0.05"
+        compile "ecsb:ecsbomberman:0.07"
         
         compile "net.onedaybeard.artemis:artemis-odb:0.8.1"
     	compile "net.mostlyoriginal.artemis-odb:contrib-core:0.7.1" 
